@@ -1,21 +1,21 @@
-# Fusión HDR de imágenes con R
-# www.datosimagensonido.com
+# FusiÃ³n HDR de imÃ¡genes con R
+# www.overfitting.net
 
 library(tiff)
 
 
-# LEER FOTOGRAFÍAS
+# LEER FOTOGRAFÃAS
 # Revelado lineal con DCRAW: dcraw -v -w -o 2 -4 -T *.CR2
 img1=readTIFF("raw1.tiff", native=F, convert=F)
 img2=readTIFF("raw2.tiff", native=F, convert=F)
 
 
-# CÁLCULO EXPOSICIÓN RELATIVA
+# CÃLCULO EXPOSICIÃ“N RELATIVA
 MIN=2^(-5)  # Desde -5EV...
 MAX=0.95  # ...hasta 95%
 indices=which(img1>=MIN & img1<=MAX & img2>=MIN & img2<=MAX)
 exprel=img2[indices]/img1[indices]
-f=median(exprel)  # Factor corrector de exposición
+f=median(exprel)  # Factor corrector de exposiciÃ³n
 
 # Histograma de exposiciones relativas
 hist(exprel[exprel>=10 & exprel<=22],
@@ -25,18 +25,18 @@ abline(v=16, col='gray', lty='dotted')
 abline(v=f, col='red')
 
 mapacalc=img1*0
-mapacalc[indices]=1  # 1=lo que ha participado en el cálculo
+mapacalc[indices]=1  # 1=lo que ha participado en el cÃ¡lculo
 writeTIFF(mapacalc, "mapacalc.tif", bits.per.sample=8, compression="LZW")
-solape=length(indices)/length(img1)  # % información entró en el cálculo
+solape=length(indices)/length(img1)  # % informaciÃ³n entrÃ³ en el cÃ¡lculo
 
 
-# FUSIÓN HDR
+# FUSIÃ“N HDR
 hdr=img1  # Partimos de la foto menos expuesta
-indices=which(img2<=MAX)  # Niveles RGB a obtener de la foto más expuesta
-hdr[indices]=img2[indices]/f  # Los sobreescribimos igualando exposición
+indices=which(img2<=MAX)  # Niveles RGB a obtener de la foto mÃ¡s expuesta
+hdr[indices]=img2[indices]/f  # Los sobreescribimos igualando exposiciÃ³n
 writeTIFF(hdr^(1/2.2), "hdr.tif", bits.per.sample=16, compression="LZW")
 
 mapafusion=img1*0
 mapafusion[-indices]=1  # 1=lo obtenido de la foto menos expuesta
 writeTIFF(mapafusion, "mapafusion.tif", bits.per.sample=8, compression="LZW")
-mejora=length(indices)/length(img1)  # % información foto más expuesta
+mejora=length(indices)/length(img1)  # % informaciÃ³n foto mÃ¡s expuesta
