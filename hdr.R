@@ -1,5 +1,6 @@
 # Fusión HDR de imágenes con R
 # www.overfitting.net
+# https://www.overfitting.net/2018/07/fusion-hdr-de-imagenes-con-r.html
 
 library(tiff)
 
